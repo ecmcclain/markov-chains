@@ -46,9 +46,24 @@ def make_chains(text_string):
 
     chains = {}
 
-    # your code goes here
+    #turn input string into list
+    words_list = text_string.strip().split(" ")
 
+    #iterate through the list word by word
+    for index, word in enumerate(words_list):
+        #if the current word and the next word are in the dictionary, append the next next word to the value list
+        #otherwise, add the current word and next word tuple with the next next word value to the dictionary
+        if index < len(words_list) -2:
+            temp_tuple = (word, words_list[index+1])
+            temp_list = chains.get(temp_tuple, list())
+            temp_list.append(words_list[index+2])
+            chains[temp_tuple] = temp_list
+   
     return chains
+
+dictionary = make_chains(open_text)
+for word, values in dictionary.items():
+    print(f'{word}: {values}')
 
 
 def make_text(chains):
@@ -58,8 +73,28 @@ def make_text(chains):
 
     # your code goes here
 
+    #get a link using choice on list(chains.keys())
+    link = choice(list(chains.keys()))
+
+    ## start of repeat
+    #check if the next key is in chains
+    while link in chains:
+        #add the link to the words list
+        words.append(link[0])
+
+        #get the list of valid words for the link
+         #select the next word using choice on the list of valid words
+        next_word = choice(chains[link])
+
+        #make the next key out of the second part of the link
+        link = (link[1], next_word)
+    #repeat 
+    #add the key that not in the dictionary to the words list
+    words.extend([link[0], link[1]])
+
     return ' '.join(words)
 
+#print(make_text(dictionary))
 
 input_path = 'green-eggs.txt'
 
